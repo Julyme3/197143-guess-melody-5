@@ -7,16 +7,23 @@ import GenreQuestionScreen from "../genre-question-screen/genre-question-screen"
 import AuthScreen from "../auth-screen/auth-screen";
 import GameOverScreen from "../game-over-screen/game-over-screen";
 import WinScreen from "../win-screen/win-screen";
+import GameScreen from "../game-screen/game-screen";
 
 const App = (props) => {
-  const {errorsCount} = props;
+  const {errorsCount, questions} = props;
+  const [firstQuestion, secondQuestion] = questions;
 
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact>
-          <WelcomeScreen errorsCount={errorsCount} />
-        </Route>
+        <Route path="/" exact
+          render={({history}) => (
+            <WelcomeScreen
+              errorsCount={errorsCount}
+              onPlayButtonClick={() => history.push(`/game`)}
+            />
+          )}
+        />
         <Route path="/login" exact>
           <AuthScreen />
         </Route>
@@ -26,11 +33,22 @@ const App = (props) => {
         <Route path="/lose" exact>
           <GameOverScreen />
         </Route>
+        <Route path="/game">
+          <GameScreen
+            questions={questions}
+          />
+        </Route>
         <Route path="/dev-artist" exact>
-          <ArtistQuestionScreen />
+          <ArtistQuestionScreen
+            question={secondQuestion}
+            onAnswer={() => {}}
+          />
         </Route>
         <Route path="/dev-genre" exact>
-          <GenreQuestionScreen />
+          <GenreQuestionScreen
+            question={firstQuestion}
+            onAnswer={() => {}}
+          />
         </Route>
       </Switch>
     </BrowserRouter>
@@ -39,6 +57,7 @@ const App = (props) => {
 
 App.propTypes = {
   errorsCount: PropTypes.number.isRequired,
+  questions: PropTypes.array.isRequired,
 };
 
 export default App;
